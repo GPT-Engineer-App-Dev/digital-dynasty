@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, SimpleGrid, Heading } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import { Box, SimpleGrid, Heading, Input } from '@chakra-ui/react';
 import ProductCard from '../components/ProductCard';
 
 const sampleProducts = [
@@ -12,11 +12,27 @@ const sampleProducts = [
 ];
 
 const Products = () => {
+  const [filteredProducts, setFilteredProducts] = useState(sampleProducts);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const filtered = sampleProducts.filter(product =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [searchQuery]);
+
   return (
     <Box maxWidth="1200px" margin="auto" p={8}>
       <Heading as="h1" size="xl" mb={8}>Our Products</Heading>
+      <Input
+        placeholder="Search products..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        mb={4}
+      />
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
-        {sampleProducts.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </SimpleGrid>
